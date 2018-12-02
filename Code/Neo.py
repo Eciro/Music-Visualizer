@@ -4,20 +4,24 @@ from scipy.fftpack import fft
 import numpy as np
 import sys
 
-music = sys.argv[1]
+# music = sys.argv[1]
+
+music = 'solo.wav'
 rate, data = wav.read(music)
-fft_out = fft(data, 16)
-real = fft_out.real
+data = np.max(data, 1)
 
-bins = len(real)//16
+sample_rate = 4
+step = rate/sample_rate
 
-file = open("fft.txt","w")
+fft_dims = 2**10
 
-nums = [b[0] for b in real]
+length = len(data)
+total_steps = np.ceil(length/step)
 
-for i in range(len(nums)):
-    file.write(str(nums[i]))
-    if(i < len(nums)-1):
-        file.write(', ')
+fft_data = np.zeros((total_steps, fft_dims))
 
-file.close()
+for t in np.arange(total_steps):
+    fft_out = fft(data[t*step:], fft_dims).real
+    fft_data[t,:] = fft_out
+
+np.savetxt("fft.csv", fft_data, delimiter=",")
