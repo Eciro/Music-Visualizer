@@ -3,105 +3,330 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+#include <time.h>
+
 using namespace std;
 
-void findMaxMin(float data[][], float& min, float& max){
+void findMaxMin(float data[][], float &min, float &max)
+{
 
-    for (int i = 0; i < maxRow; i++){
-        for (int j = 0; j < maxCol; j++){
-            if (data[i][j] < min){
+    for (int i = 0; i < maxRow; i++)
+    {
+        for (int j = 0; j < maxCol; j++)
+        {
+            if (data[i][j] < 0)
+            {
+                data[i][j] *= -1;
+            }
+            if (data[i][j] < min)
+            {
                 min = data[i][j];
             }
-            if (data[i][j] > max){
+            if (data[i][j] > max)
+            {
                 max = data[i][j];
             }
         }
     }
 }
 
-int main(int argc, char **argv){
-    //create object for each strip
-    NeoPixel bin1 = NeoPixel(9);
-    NeoPixel bin2 = NeoPixel(9);
-    NeoPixel bin3 = NeoPixel(9);
-    NeoPixel bin4 = NeoPixel(9);
-    NeoPixel bin5 = NeoPixel(9);
-    NeoPixel bin6 = NeoPixel(9);
-    NeoPixel bin7 = NeoPixel(9);
-    NeoPixel bin8 = NeoPixel(9);
-    NeoPixel bin9 = NeoPixel(9);
-    NeoPixel bin10 = NeoPixel(9);
-    NeoPixel bin11 = NeoPixel(9);
-    NeoPixel bin12 = NeoPixel(9);
-    NeoPixel bin13 = NeoPixel(9);
-    NeoPixel bin14 = NeoPixel(9);
-    NeoPixel bin15 = NeoPixel(9);
-    NeoPixel bin16 = NeoPixel(9);
+void splitBins(int maxRow, int maxCol, float &frequencies,
+              NeoPixel bins) {
+    //splitting data into the bins
+    float value = 0;
+    for (int i = 0; i < maxRow; i++)
+    {
+        for (int p = 0; p < 16; p++)
+        {
+            frequencies[i][p] = 0;
+        }
+        for (int j = 0; j < maxCol; j++)
+        {
+            value = data[i][j];
+            if (j <= bins[0])
+            {
+                frequencies[i][0] += value;
+            }
+            else if (j <= bins[1])
+            {
+                frequencies[i][1] += value;
+            }
+            else if (j <= bins[2])
+            {
+                frequencies[i][2] += value;
+            }
+            else if (j <= bins[3])
+            {
+                frequencies[i][3] += value;
+            }
+            else if (j <= bins[4])
+            {
+                frequencies[i][4] += value;
+            }
+            else if (j <= bins[5])
+            {
+                frequencies[i][5] += value;
+            }
+            else if (j <= bins[6])
+            {
+                frequencies[i][6] += value;
+            }
+            else if (j <= bins[7])
+            {
+                frequencies[i][7] += value;
+            }
+            else if (j <= bins[8])
+            {
+                frequencies[i][8] += value;
+            }
+            else if (j <= bins[9])
+            {
+                frequencies[i][9] += value;
+            }
+            else if (j <= bins[10])
+            {
+                frequencies[i][10] += value;
+            }
+            else if (j <= bins[11])
+            {
+                frequencies[i][11] += value;
+            }
+            else if (j <= bins[12])
+            {
+                frequencies[i][12] += value;
+            }
+            else if (j <= bins[13])
+            {
+                frequencies[i][13] += value;
+            }
+            else if (j <= bins[14])
+            {
+                frequencies[i][14] += value;
+            }
+            else if (j <= bins[15])
+            {
+                frequencies[i][15] += value;
+            }
+        }
+    }
+}
 
-    //transfer values from csv file to 2d array
+char programName() //return string of program name without ./
+{
+	const char* argName = argv[0];
+	int i = 0;
+	int namelength = 0;
+  	while(argName[i] != 0)
+	{
+		namelength++;
+		i++;
+	} 
+
+	char programName[namelength];
+
+	i = 0;
+  
+  	while(argName[i + 2] != 0)
+	{
+		programName[i] = argName[i + 2];
+		i++;
+	} 
+  
+	return programName;
+}
+
+int config(NeoPixel data[])
+{
+    FILE* configFile;
+    configFile = fopen("/home/pi/settings.txt", "r");
+
+    if (!configFile)
+    {
+        perror("Config File could not be opened")
+        return -1;
+    }
+  	
+  	fprintf(configFile, "");
+}
+
+void watchDog()
+{
+    FILE* wDog;
+    wDog = fopen("/dev/watchdog", "w");
+  	fprintf(wDog, "ping");
+}
+
+void watchDogOff()
+{
+    FILE* dogOff;
+    dogOff = fopen("/dev/watchdog", "w");
+  	fprintf(wDog, 'V');
+}
+
+void log()
+{
+    FILE *logFile;
+    logFile = fopen("/home/ pi/log.txt", "a");
+}
+
+void pixelColor(char color[]) 
+{
+	for(int i = 0; i < )
+}
+
+void start(Neopixel n[])
+{
+  for(int i = 0; i < 15; i++)
+  {
+    n[i].begin();
+  }
+}
+
+int main(int argc, char **argv)
+{
+    //create object for each strip
+	NeoPixel lights = NeoPixel(144);
+  
+	//transfer values from csv file to 2d array
     string file = "fft.csv";
     csv::Parser song = csv::Parser(file);
     int maxRow = song.rowCount();
     int maxCol = song.columnCount();
     float data[maxRow][maxCol];
-    for(int i = 0; i < maxRow; i++) {
-        for(int j = 0; j < maxCol; j++) {
+    for (int i = 0; i < maxRow; i++)
+    {
+        for (int j = 0; j < maxCol; j++)
+        {
             data[i][j] = fabs(stof(song[i][j]));
         }
     }
+  
+    //data is split into 1024 frequencies, frequencies are split into 16 bins, making each bin 64 vals
+  	int bins[] = {
+    64,
+    128,
+    192,
+    256,
+    320,
+    384,
+    446,
+  	512,
+    576,
+    640,
+    704,
+    768,
+    832,
+    896,
+    960,
+    1024};
+  
+    float frequencies[maxRow][16];
+  	splitBins(maxRow, maxCol, frequencies, bins);
 
     //find max and min value in 2d array
     float min = 0;
     float max = 0;
     findMaxMin(data, min, max);
-
-    //create range for each bin
-    float diff = max - min;
-    float range = diff/16;
-    bin1.rangeMin = min;
-    bin1.rangeMax = min + range;
-    bin2.rangeMin = min + range + 1;
-    bin2.rangeMax = min + (2*range);
-    bin3.rangeMin = min + (2*range)+1;
-    bin3.rangeMax = min + (3*range);
-    bin4.rangeMin = min + (3*range)+1;
-    bin4.rangeMax = min + (4*range);
-    bin5.rangeMin = min + (4*range) +1;
-    bin5.rangeMax = min + (5*range);
-    bin6.rangeMin = min + (5*range) + 1;
-    bin6.rangeMax = min + (6*range);
-    bin7.rangeMin = min + (6*range) + 1;
-    bin7.rangeMax = min + (7*range);
-    bin8.rangeMin = min + (7*range) + 1;
-    bin8.rangeMax = min + (8*range);
-    bin9.rangeMin = min + (8*range) + 1;
-    bin9.rangeMax = min + (9*range);
-    bin10.rangeMin = min + (9*range) + 1;
-    bin10.rangeMax = min + (10*range);
-    bin11.rangeMin = min + (10*range) + 1;
-    bin11.rangeMax = min + (11*range);
-    bin12.rangeMin = min + (11*range) + 1;
-    bin12.rangeMax = min + (12*range);
-    bin13.rangeMin = min + (12*range) + 1;
-    bin13.rangeMax = min + (13*range);
-    bin14.rangeMin = min + (13*range) + 1;
-    bin14.rangeMax = min + (14*range);
-    bin15.rangeMin = min + (14*range) + 1;
-    bin15.rangeMax = min + (15*range);
-    bin16.rangeMin = min + (15*range) + 1;
-    bin16.rangeMax = max;
-
-    //change lights based on numerical value
-    float value = 0;
-    while(true) {
-        for(int i = 0; i < maxRow; i++) {
-            for(int j = 0; j < maxCol; j++) {
-                value = data[i][j];
-                if(value >= bin1.rangeMin || value <= bin2.rangeMax) {
-
-                }
-            }
+  
+  	//(9 / log(max))
+  
+  	int x = 0;
+  	int y = 0;
+  	while (x < maxRow) {
+      while (y < 16) {
+        int numLeds = log(frequencies[x][y]);
+        if(y == 0)
+        {
+          for(int i = 0; i < numLeds; i++)
+          {
+              lights[i].setPixelColor();
+          }
         }
+        if(y == 1)
+        {
+          for(int i = 9; i < numLeds+9; i++)
+          {
+              lights[i].setPixelColor();
+          }
+        }
+        if(y == 2)
+        {
+          for(int i = 18; i < numLeds+18; i++)
+          {
+              lights[i].setPixelColor();
+          }
+        }
+        if(y == 3)
+        {
+          for(int i = 27; i < numLeds+27; i++)
+          {
+              lights[i].setPixelColor();
+          }
+        }
+        if(y == 4)
+        {
+          for(int i = 36; i < numLeds+36; i++)
+          {
+              lights[i].setPixelColor();
+          }
+        }
+        if(y == 5)
+        {
+          for(int i = 45; i < numLeds+45; i++)
+          {
+              lights[i].setPixelColor();
+          }
+        }
+        if(y == 6)
+        {
+          for(int i = 54; i < numLeds+54; i++)
+          {
+              lights[i].setPixelColor();
+          }
+        }
+        if(y == 7)
+        {
+          for(int i = 63; i < numLeds+63; i++)
+          {
+              lights[i].setPixelColor();
+          }
+        }
+        for(int i = 72; i < numLeds+72; i++)
+        {
+        	lights[i].setPixelColor();
+        }
+        for(int i = 81; i < numLeds+81; i++)
+        {
+        	lights[i].setPixelColor();
+        }
+        for(int i = 90; i < numLeds+90; i++)
+        {
+        	lights[i].setPixelColor();
+        }
+        for(int i = 99; i < numLeds+99; i++)
+        {
+        	lights[i].setPixelColor();
+        }
+        for(int i = 108; i < numLeds+108; i++)
+        {
+        	lights[i].setPixelColor();
+        }
+        for(int i = 117; i < numLeds+117; i++)
+        {
+        	lights[i].setPixelColor();
+        }
+        for(int i = 126; i < numLeds+126; i++)
+        {
+        	lights[i].setPixelColor();
+        }
+        for(int i = 135; i < numLeds+135; i++)
+        {
+        	lights[i].setPixelColor();
+        }
+        y++;
+      }
+      usleep(250000); //.25s delay before change lights
+      x++;
     }
     return 0;
 }
